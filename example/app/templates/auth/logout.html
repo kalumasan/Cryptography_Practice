@@ -1,0 +1,22 @@
+{% extends "adminlte/base_without_nav.html" %}
+
+
+{% block title %}退出{% endblock %}
+{% block description %}您已成功退出账户！{% endblock %}
+{% block bodytag %}login-page{% endblock %}
+
+{% block body %}
+
+<div class="login-box" style="margin: 17% auto;">
+    <div class="login-logo-b">
+        <strong>CUC</strong>cloud：您已成功登出
+    </div>
+
+    <div class="login-box-body" style="background: #d2d6de;text-align: center;">
+        <form action="/auth/logout">
+            <input class="btn btn-link" type="button" onclick='location.href=("login")' value="重新登录">
+        </form>
+    </div>
+</div>
+
+{% endblock  %}

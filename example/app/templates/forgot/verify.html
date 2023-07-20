@@ -1,0 +1,38 @@
+{% extends "adminlte/base_without_nav.html" %}
+
+{% block title %}验证{% endblock %}
+{% block description %}请完成验证!{% endblock %}
+{% block bodytag %}login-page{% endblock %}
+
+{% block body %}
+
+<div class="login-box">
+    <div class="login-logo">
+        <strong>CUC</strong>cloud-身份验证
+    </div>
+    <div class="login-box-body">
+        {# Display errors (if there are any). #}
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        {# Render the login form. #}
+        <form action="/forgot/verify_email/{{ token }}/{{ email }}" method="post">
+
+            <div class="form-group">
+                {{ form.verify_code.label }}
+                {{ form.verify_code(class_="form-control") }}
+            </div>
+            {{ form.csrf_token }}
+
+            <input class="btn btn-primary" type="submit" onclick='location.href=("reset_password/<email>")' value="确认">
+            
+        </form>
+    </div>
+</div>
+{% endblock %}

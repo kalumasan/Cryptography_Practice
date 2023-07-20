@@ -1,0 +1,37 @@
+{% extends "adminlte/base_without_nav.html" %}
+
+{% block title %}邮箱验证{% endblock %}
+{% block description %}请输入需要验证的邮箱!{% endblock %}
+{% block bodytag %}login-page{% endblock %}
+
+{% block body %}
+
+<div class="login-box">
+    <div class="login-logo">
+        <strong>CUC</strong>cloud-邮箱验证
+    </div>
+    <div class="login-box-body">
+        {# Display errors (if there are any). #}
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        {# Render the login form. #}
+        <form action="/forgot/sendemail" method="post">
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email(class_="form-control") }}
+            </div>
+
+            {{ form.csrf_token }}
+
+            <input class="btn btn-primary" type="submit" onclick='location.href=("verify_email/<token>/<email>")' value="确认">
+        </form>
+    </div>
+</div>
+{% endblock %}

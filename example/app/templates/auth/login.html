@@ -1,0 +1,44 @@
+{% extends "adminlte/base_without_nav.html" %}
+{% block title %}登录{% endblock %}
+{% block description %}请登录您的账户!{% endblock %}
+{% block bodytag %}login-page{% endblock %}
+
+{% block body %}
+
+<div class="login-box">
+    <div class="login-logo">
+        <strong>CUC</strong>cloud-登录
+    </div>
+    <div class="login-box-body">
+        {# Display errors (if there are any). #}
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        {# Render the login form. #}
+        <form action="/auth/login" method="post">
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email(class_="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.password.label }}
+                {{ form.password(class_="form-control") }}
+            </div>
+            {{ form.csrf_token }}
+
+            <input class="btn btn-primary" type="submit" value="登录">
+            <input class="btn btn-link" type="button" onclick='location.href=("register")' value="注册">
+            <input class="btn btn-link" type="button" onclick='location.href=("/forgot/sendemail")' value="找回密码">#这里的herf内容应为路由而非其对应html
+        </form>
+    </div>
+</div>
+
+{% endblock  %}
+

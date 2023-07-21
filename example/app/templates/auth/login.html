@@ -1,5 +1,9 @@
 {% extends "adminlte/base_without_nav.html" %}
 {% block title %}登录{% endblock %}
+{% block styles %}
+{{super()}}
+<link href="/static/css/typewriter.css" rel="stylesheet" type="text/css" />
+{% endblock %}
 {% block description %}请登录您的账户!{% endblock %}
 {% block bodytag %}login-page{% endblock %}
 
@@ -35,10 +39,30 @@
 
             <input class="btn btn-primary" type="submit" value="登录">
             <input class="btn btn-link" type="button" onclick='location.href=("register")' value="注册">
-            <input class="btn btn-link" type="button" onclick='location.href=("/forgot/sendemail")' value="找回密码">#这里的herf内容应为路由而非其对应html
+            <input class="btn btn-link" type="button" onclick='location.href=("/forgot/sendemail")' value="找回密码">
+            {# 这里的herf内容应为路由而非其对应html #}
         </form>
     </div>
 </div>
+
+<div class="typewriter-container">
+    <div class="typed-out">欢迎使用<strong>CUC</strong>cloud<strong>！</strong></div>
+    <div class="tips">点击任意位置关闭欢迎语句</div>
+  </div>
+  <script> // 获取文本容器元素 
+  var typedOut = document.querySelector(".typed-out"); // 监听用户点击事件 
+  var Border = document.querySelector(".typewriter-container");
+  var Tooltip = document.querySelector(".tips");
+  document.addEventListener("click", function() { 
+      // 停止打字机动画 
+      typedOut.style.animation = "none"; 
+      Border.style.animation = "none";
+      Tooltip.style.animation = "none";
+      // 隐藏文本容器 
+      typedOut.style.display = "none"; 
+      Border.style.display = "none"; 
+      Tooltip.style.display = "none";});
+      </script> 
 
 {% endblock  %}
 

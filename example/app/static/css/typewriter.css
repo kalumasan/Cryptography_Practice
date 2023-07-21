@@ -1,0 +1,41 @@
+body{
+    font-family: 'Trebuchet MS', sans-serif; 
+  }
+  .typewriter-container{
+    display: inline-block;
+    position: fixed;
+    top: 50%; /* example value */
+    left: 50%; /* example value */
+    transform: translate(-50%, -50%); /* optional to center the container */
+    background-color: white; /* add background color */
+    border: 0.2rem solid #3c8dbc; /* add border */
+    border-radius: 10px; /* add border radius */
+    padding: 0.5rem 1.5rem 0.5rem; /* add padding */
+  }
+  .typed-out{
+  overflow: hidden;
+  border-right: .15em solid #3c8dbc;
+  white-space: nowrap;
+  font-size: 23px;
+  color: #367fa9;
+  width: 0;
+  animation: 
+    typing 1s steps(20, end) forwards,
+    blink .8s infinite;
+  }
+  .tips{
+    font-size: 0.5rem; /* 设置字体大小 */
+    color: gray; /* 设置字体颜色 */
+    text-align: center; /* 设置文本居中对齐 */
+    margin: 0rem 0.5rem 0rem 0.5rem; /* 设置外边距 */
+    z-index: 1; /* 设置层叠顺序 */
+  }
+
+  @keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+  }
+  @keyframes blink {
+  from { border-color: transparent }
+  to { border-color: #3c8dbc; }
+  }

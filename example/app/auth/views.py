@@ -49,6 +49,8 @@ def post__register():
         if not username_pattern.fullmatch(username):
              raise AssertionError("用户名只能使用数字、中文和英文")
         email=form.email.data
+        if not re.match(r'^\w+@\w+\.\w+$', email):
+             raise AssertionError("邮箱格式不正确")
         if User.query.filter_by(email=email).first():
              raise AssertionError("该email已被注册")
         password=form.password.data

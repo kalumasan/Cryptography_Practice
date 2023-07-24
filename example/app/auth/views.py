@@ -49,23 +49,18 @@ def post__register():
         if not username_pattern.fullmatch(username):
              raise AssertionError("用户名只能使用数字、中文和英文")
         email=form.email.data
+        if not re.match(r'^\w+@\w+\.\w+$', email):
+             raise AssertionError("邮箱格式不正确")
         if User.query.filter_by(email=email).first():
              raise AssertionError("该email已被注册")
         password=form.password.data
         if not password_pattern.fullmatch(password):
             raise AssertionError("密码不安全,同时包含至少一个小写字母,一个大写字母和一个数字,长度8-36")
-        
-        # 生成盐值
-        salt = os.urandom(16)
-        # 加密密码
-        hashed_password = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000, 64)
-        # 存储加密后的密码和盐值到数据库中
         user = User(email=email,
                     email_confirmed=True,
                     name=username,
                     role=UserRole.ADMIN)
-        user.password = hashed_password
-        user.salt = salt
+        user.password = password
         db.session.add(user)
         db.session.commit()
         

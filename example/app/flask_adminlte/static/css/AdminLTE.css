@@ -14,6 +14,14 @@ html,
 body {
   min-height: 100%;
 }
+.link-container {
+  display: block;
+}
+
+.link-container a {
+  margin-right: 40px; /* 调整此处的值以控制链接之间的间距 */
+}
+
 .layout-boxed html,
 .layout-boxed body {
   height: 100%;
@@ -1120,8 +1128,9 @@ a:focus {
   }
 }
 .navbar-nav > .user-menu > .dropdown-menu > .user-footer {
-  background-color: #f9f9f9;
-  padding: 10px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #f4f4f4;
+  padding: 15px;
 }
 .navbar-nav > .user-menu > .dropdown-menu > .user-footer:before,
 .navbar-nav > .user-menu > .dropdown-menu > .user-footer:after {
@@ -3206,6 +3215,14 @@ table.text-center th {
 .login-logo a,
 .register-logo a {
   color: #444;
+}
+.login-logo-b,
+.register-logo-b {
+  font-size: 35px;
+  text-align: center;
+  margin-bottom: 25px;
+  font-weight: 300;
+  white-space:nowrap;
 }
 .login-page,
 .register-page {

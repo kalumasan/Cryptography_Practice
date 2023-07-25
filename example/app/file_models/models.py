@@ -65,27 +65,27 @@ class File(db.Model):
                 f.write(content)
             with open(storage_path+user_id+hash_value+'.sig', 'wb') as f:
                 f.write(signature)
-        creator_id = user.id_
+        creator_id = user.id
         file = File(creator_id=creator_id, filename=filename, hash_value=hash_value)
         db.session.add(file)
         db.session.commit()
 
     @classmethod
     def delete_file(cls, user, filename):
-        f = File.query.filter(and_(File.creator_id == user.id_, File.filename == filename)).first()
+        f = File.query.filter(and_(File.creator_id == user.id, File.filename == filename)).first()
         assert f, 'no such file ({})'.format(filename)
         hash_value = f.hash_value
         db.session.delete(f)
         db.session.commit()
         files = File.query.filter(File.hash_value == hash_value).all()
         if not len(files):
-            remove(storage_path+str(user.id_)+'/'+hash_value)
-            remove(storage_path+str(user.id_)+'/'+hash_value+'.sig')
+            remove(storage_path+str(user.id)+'/'+hash_value)
+            remove(storage_path+str(user.id)+'/'+hash_value+'.sig')
 
     @classmethod
     def download_file(cls, user, filename, type_):
         from flask import make_response
-        f = File.query.filter(and_(File.creator_id == user.id_, File.filename == filename)).first()
+        f = File.query.filter(and_(File.creator_id == user.id, File.filename == filename)).first()
         assert f, 'no such file ({})'.format(filename)
         hash_value = f.hash_value
         if type_ == 'hashvalue':
@@ -93,12 +93,12 @@ class File(db.Model):
             filename = filename + '.hash'
         elif type_ == 'signature':
             # 读取签名
-            with open(storage_path+str(user.id_)+'/'+hash_value+'.sig', 'rb') as f_:
+            with open(storage_path+str(user.id)+'/'+hash_value+'.sig', 'rb') as f_:
                 content = f_.read()
                 filename = filename+'.sig'
         else:
             # 读取密文
-            with open(storage_path+str(user.id_)+'/'+hash_value, 'rb') as f_:
+            with open(storage_path+str(user.id)+'/'+hash_value, 'rb') as f_:
                 content = f_.read()
             if type_ == 'plaintext':
                 content = app.secret.symmetric_decrypt(app.secret.decrypt(user.encrypted_symmetric_key), content)
@@ -110,7 +110,7 @@ class File(db.Model):
 
     @classmethod
     def share_file(cls, user, filename):
-        f = File.query.filter(and_(File.creator_id == user.id_, File.filename == filename)).first()
+        f = File.query.filter(and_(File.creator_id == user.id, File.filename == filename)).first()
         assert f, 'no such file ({})'.format(filename)
         f.shared = not f.shared
         db.session.commit()

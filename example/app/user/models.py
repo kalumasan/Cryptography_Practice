@@ -6,8 +6,9 @@ from datetime import datetime
 
 from app.extensions import db
 from app.extensions import bcrypt
-
+from flask_sqlalchemy import SQLAlchemy
 import enum
+from sqlalchemy import Column, String, Integer, LargeBinary
 
 from flask import current_app
 
@@ -27,6 +28,9 @@ class User(db.Model, UserMixin):
     name = db.Column(db.String(100), nullable=False)
     role = db.Column(db.Enum(UserRole), nullable=False)
     _password = db.Column(db.String(128), nullable=False)
+    encrypted_symmetric_key = db.Column(db.LargeBinary(32), nullable=False, server_default='')
+    encrypted_private_key = db.Column(db.LargeBinary(32), nullable=False, server_default='')
+    encrypted_public_key = db.Column(db.LargeBinary(32), nullable=False, server_default='')
     created_time = db.Column(db.DateTime, default=datetime.now)
     
 
@@ -43,6 +47,33 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return "<User %r>" % self.name
+    
+
+    @classmethod
+    def get_by(cls, **kwargs):
+        return cls.query.filter_by(**kwargs).first()
+
+    @classmethod
+    def create_user(cls, username,email,password):
+        import app.secret
+        user = User.get_by(name=username)
+        assert user is None, 'email already registered'
+        # 先随机生成一个用户的对称密钥与公私钥
+        symmetric_key = app.secret.new_symmetric_key()
+        private_key, public_key = app.secret.new_pair()
+        print(symmetric_key)
+        # 再用服务器的公钥加密这些密钥
+        user = User(name=username,
+                    email=email,
+                    email_confirmed=True,                    
+                    role=UserRole.ADMIN,
+                    encrypted_symmetric_key=app.secret.encrypt(symmetric_key),
+                    encrypted_private_key=app.secret.encrypt(private_key),
+                    encrypted_public_key=app.secret.encrypt(public_key)
+                    )
+        user.password = password
+        db.session.add(user)
+        db.session.commit()
     
 
     

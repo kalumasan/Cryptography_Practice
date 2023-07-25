@@ -56,13 +56,9 @@ def post__register():
         password=form.password.data
         if not password_pattern.fullmatch(password):
             raise AssertionError("密码不安全,同时包含至少一个小写字母,一个大写字母和一个数字,长度8-36")
-        user = User(email=email,
-                    email_confirmed=True,
-                    name=username,
-                    role=UserRole.ADMIN)
-        user.password = password
-        db.session.add(user)
-        db.session.commit()
+        
+        User.create_user(username,email,password)
+        
         
         return redirect(url_for('auth.login'))
     except AssertionError as e:

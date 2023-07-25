@@ -7,8 +7,7 @@ from app.extensions import db
 from app.blueprints import forgot
 import random
 import re
-import os
-import hashlib
+
 
 
 

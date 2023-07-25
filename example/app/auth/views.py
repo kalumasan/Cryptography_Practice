@@ -61,7 +61,6 @@ def post__register():
                     name=username,
                     role=UserRole.ADMIN)
         user.password = password
-        user.salt = salt
         db.session.add(user)
         db.session.commit()
         

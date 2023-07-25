@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title -%}文件{%- endblock title %}
+
+{% block content -%}
+
+
+<div class="row" style="padding-top: 10px;margin-bottom: 10px;border-radius: 3px;border: 1px solid #efefef;">
+    <div class="col-md-12">
+        <div class="link-container">
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <p>{{message}}</p>
+            {% endfor %}
+        {% endwith %}
+        <p>{{username}}您好！</p>
+        {% if files %}
+            <p>您当前上传了以下文件</p>
+            <div class="link-container a">
+            <ui>
+            {% for file in files %}
+                <li>
+                    <span style="display: inline-block;max-width: 380px;overflow-wrap: break-word;">
+                    {{file.filename}}(已加密)
+                    {% if file.shared %}
+                    (已共享)
+                    {% else %}
+                    (未共享)
+                    {% endif %}
+                    </span>
+                        <a href="/files/download?filename={{file.filename}}&type=encrypted"  style="position: absolute; right: 508px;">下载</a>
+                        <a href="/files/download?filename={{file.filename}}&type=hashvalue" style="position: absolute; right: 398px;">下载哈希值</a>
+                        <a href="/files/download?filename={{file.filename}}&type=plaintext" style="position: absolute; right: 288px;">解密并下载</a>
+                        <a href="/files/download?filename={{file.filename}}&type=signature" style="position: absolute; right: 164px;">下载签名文件</a>
+                        <a href="/files/share?filename={{file.filename}}" style="position: absolute; right: 68px;">
+                        {% if file.shared %}
+                            取消共享
+                        {% else %}
+                            进行共享
+                        {% endif %}
+                        </a>
+                        <a href="/files/remove?filename={{file.filename}}" style="position: absolute; right: 0px;margin-right: 15px;">删除</a>
+                </li>
+            {% endfor %}
+            </ui>
+            </div>
+        {% else %}
+            <p>您当前没有上传任何文件</p>
+        {% endif %}
+        <br>
+        <div class="link-container a">
+            <a href="/files/upload">上传</a>
+            <a href="/shared_files">共享文件</a>
+            <a href="/">回到主页</a>
+        </div>
+        </div>
+    </div>
+</div>
+{%- endblock content %}

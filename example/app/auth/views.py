@@ -56,17 +56,11 @@ def post__register():
         password=form.password.data
         if not password_pattern.fullmatch(password):
             raise AssertionError("密码不安全,同时包含至少一个小写字母,一个大写字母和一个数字,长度8-36")
-        
-        # 生成盐值
-        salt = os.urandom(16)
-        # 加密密码
-        hashed_password = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000, 64)
-        # 存储加密后的密码和盐值到数据库中
         user = User(email=email,
                     email_confirmed=True,
                     name=username,
                     role=UserRole.ADMIN)
-        user.password = hashed_password
+        user.password = password
         user.salt = salt
         db.session.add(user)
         db.session.commit()

@@ -18,5 +18,7 @@ flask db upgrade
 flask user create-admin <username@email.com> <username> <password>
 
 # 运行站点
-flask run
+set FLASK_RUN_CERT=cert\selfsignedCertificate.pem
+set FLASK_RUN_KEY=cert\privateKey.pem
+flask run --host=www.cuccloud.getuplate.com --port=443 --cert=cert\selfsignedCertificate.pem --key=cert\privateKey.pem
 ```

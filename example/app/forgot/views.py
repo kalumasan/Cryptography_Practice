@@ -63,10 +63,7 @@ def reset_password(email):
         try:
             newpswd=form.newpassword.data
             assert password_pattern.fullmatch(newpswd), '密码不安全,同时包含至少一个小写字母,一个大写字母和一个数字,长度8-36'
-            salt = os.urandom(16)
-        # 加密密码
-            hashed_password = hashlib.pbkdf2_hmac('sha256', newpswd.encode('utf-8'), salt, 100000, 64)
-            user.password = hashed_password
+            user.password = newpswd
             db.session.commit()
             flash('密码重置成功！')
             return redirect(url_for('auth.login'))

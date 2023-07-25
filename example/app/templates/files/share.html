@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>共享的文件</title>
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            <p>{{message}}</p>
+        {% endfor %}
+    {% endwith %}
+    {% if list %}
+        <p>当前有以下共享文件</p>
+        <ui>
+        {% for e in list %}
+            <li>
+                {{e[0]}} by {{e[1]}} (已加密)
+                <a href="/shared_file/download?filename={{e[0]}}&username={{e[1]}}&type=encrypted">下载</a>
+                <a href="/shared_file/download?filename={{e[0]}}&username={{e[1]}}&type=signature">下载签名文件</a>
+            </li>
+        {% endfor %}
+        </ui>
+    {% else %}
+        <p>当前没有任何共享文件</p>
+    {% endif %}
+    <a href="/">首页</a>
+    <a href="/public_key">获取网站公钥</a>
+</body>
+</html>
+

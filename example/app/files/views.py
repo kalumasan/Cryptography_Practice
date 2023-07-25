@@ -40,32 +40,32 @@ def post__upload():
 
 @files.route('/remove')
 @login_required
-def get__remove(user):
+def get__remove():
     try:
         filename = request.args.get('filename')
         assert filename, 'missing filename'
-        File.delete_file(user, filename)
+        File.delete_file(current_user, filename)
         flash('删除成功！')
     except AssertionError as e:
         message = e.args[0] if len(e.args) else str(e)
         flash('删除失败！'+message)
-    return redirect('/file')
+    return redirect('/files')
 
 
 @files.route('/download')
 @login_required
-def get__download(user):
+def get__download():
     try:
         filename = request.args.get('filename')
         assert filename, 'missing filename'
         type_ = request.args.get('type')
         assert type_, 'missing type'
         assert type_ in ('encrypted', 'plaintext', 'signature', 'hashvalue'), 'unknown type'
-        return File.download_file(user, filename, type_)
+        return File.download_file(current_user, filename, type_)
     except AssertionError as e:
         message = e.args[0] if len(e.args) else str(e)
         flash('下载失败！'+message)
-        return redirect('/file')
+        return redirect('/files')
 
 
 @files.route('/share')
@@ -76,8 +76,8 @@ def get__share():
         assert filename, 'missing filename'
         File.share_file(current_user, filename)
         flash('设置成功！')
-        return redirect('/file')
+        return redirect('/files')
     except AssertionError as e:
         message = e.args[0] if len(e.args) else str(e)
         flash('设置失败！'+message)
-        return redirect('/file')
+        return redirect('/files')

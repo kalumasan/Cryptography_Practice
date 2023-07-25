@@ -9,6 +9,8 @@ forgot = Blueprint('forgot', 'app.forgot.views', url_prefix='/forgot')
 
 files = Blueprint('files', 'app.files.views', url_prefix='/files')
 
+shared_files = Blueprint('shared_files', 'app.shared_files.views', url_prefix='/shared_files')
+
 
 
 
@@ -17,4 +19,5 @@ all_blueprints = (
     auth,
     forgot,
     files,
+    shared_files,
 )

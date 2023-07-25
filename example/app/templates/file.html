@@ -22,11 +22,11 @@
                 {% else %}
                 (未共享)
                 {% endif %}
-                <a href="/file/download?filename={{file.filename}}&type=encrypted">下载</a>
-                <a href="/file/download?filename={{file.filename}}&type=hashvalue">下载哈希值</a>
-                <a href="/file/download?filename={{file.filename}}&type=plaintext">解密并下载</a>
-                <a href="/file/download?filename={{file.filename}}&type=signature">下载签名文件</a>
-                <a href="/file/share?filename={{file.filename}}">
+                <a href="/files/download?filename={{file.filename}}&type=encrypted">下载</a>
+                <a href="/files/download?filename={{file.filename}}&type=hashvalue">下载哈希值</a>
+                <a href="/files/download?filename={{file.filename}}&type=plaintext">解密并下载</a>
+                <a href="/files/download?filename={{file.filename}}&type=signature">下载签名文件</a>
+                <a href="/files/share?filename={{file.filename}}">
                 {% if file.shared %}
                     取消共享
                 {% else %}

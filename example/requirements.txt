@@ -14,3 +14,4 @@ marshmallow==3.19.0
 SQLAlchemy==2.0.19
 Werkzeug==2.3.6
 WTForms==3.0.1
+regex==23.2.1

@@ -102,8 +102,8 @@
         if (donLoadTimes && donLoadDuration) {
             var form = new FormData();
             form.append('filename', filename);
-            form.append('expire_time', donLoadTimes);
-            form.append('max_downloads', donLoadDuration);
+            form.append('expire_time', donLoadDuration);
+            form.append('max_downloads', donLoadTimes);
 
         var xhr = new XMLHttpRequest();
 

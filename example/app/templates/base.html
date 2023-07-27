@@ -43,7 +43,10 @@
                         <a href="{{url_for('files.get__file')}}" class="btn btn-default btn-flat">我的文件</a>
                     </li>
                     <li class="user-footer">
-                        <a href="/shared_files" class="btn btn-default btn-flat">共享文件</a>
+                        <a href="/files/shared_files" class="btn btn-default btn-flat">共享文件</a>
+                    </li>
+                    <li class="user-footer">
+                        <a href="{{url_for('auth.symmetric_key')}}" class="btn btn-default btn-flat">获取身份码</a>
                     </li>
                     <li class="user-footer">
                         <a href="{{url_for('auth.logout')}}" class="btn btn-default btn-flat">Sign out</a>

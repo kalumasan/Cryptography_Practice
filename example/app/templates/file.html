@@ -32,28 +32,105 @@
                         <a href="/files/download?filename={{file.filename}}&type=hashvalue" style="position: absolute; right: 398px;">下载哈希值</a>
                         <a href="/files/download?filename={{file.filename}}&type=plaintext" style="position: absolute; right: 288px;">解密并下载</a>
                         <a href="/files/download?filename={{file.filename}}&type=signature" style="position: absolute; right: 164px;">下载签名文件</a>
-                        <a href="/files/share?filename={{file.filename}}" style="position: absolute; right: 68px;">
                         {% if file.shared %}
-                            取消共享
+                        <a href="/files/share?filename={{file.filename}}" style="position: absolute; right: 68px;">取消共享</a>
                         {% else %}
-                            进行共享
+                        <a href="#" style="position: absolute; right: 68px;" onclick="ShareSetting('{{file.filename}}')">进行共享</a>
                         {% endif %}
-                        </a>
                         <a href="/files/remove?filename={{file.filename}}" style="position: absolute; right: 0px;margin-right: 15px;">删除</a>
                 </li>
             {% endfor %}
             </ui>
             </div>
+
+            <!-- 弹出验证弹窗 -->
+            <div id="verificationDialog" style="display:none;position: fixed;top: 30%;left: 50%;transform: scale(1.25) translate(-40%, -40%);background-color: white;border: 1px solid #3c8dbc;">
+            
+                <p style="font-size: 7px;color: darkgray;margin: 10px 10px 0px;font-weight: 400;">请自定义下载限制：</p>
+            
+                <p style="margin: 10px 10px 0px;">
+                    <label style="color: darkgray;font-weight: 400;font-size: 13px;">下载次数：</label>
+                    <input type="number" id="donload_times" style="border: 1px solid #3c8dbc;color: grey;padding: 1.25px 0px 1.25px 3px;font-size: 13px;">
+                </p>
+            
+                <p style="margin: 10px 10px 5px;">
+                    <label style="color: darkgrey;font-weight: 400;font-size: 13px;">允许下载时限：</label>
+                    <select id="donload_duration" style="border: 1px solid #3c8dbc;color: grey;font-size: 13px;padding: 2.5px;">
+                        <option>不限时</option>
+                        <option>5分钟</option>
+                        <option>1小时</option>
+                        <option>24小时</option>
+                    </select>
+                </p>
+                
+                <input class="btn btn-link" type="button" onclick="VerifyAndSet()" value="确认">
+                <input class="btn btn-link" type="button" onclick="CancelVerification()" value="取消">
+            </div>
+
         {% else %}
             <p>您当前没有上传任何文件</p>
         {% endif %}
         <br>
         <div class="link-container a">
             <a href="/files/upload">上传</a>
-            <a href="/shared_files">共享文件</a>
-            <a href="/">回到主页</a>
+            <!-- <a href="/files/shared_files">共享文件</a>
+            <a href="/">回到主页</a> -->
         </div>
         </div>
     </div>
 </div>
+
+<script>
+
+    var global_Filename = "";
+
+    function ShareSetting(filename) {
+        global_Filename = filename;
+        document.getElementById('verificationDialog').style.display = 'block';
+    }
+
+    function VerifyAndSet() {
+        document.getElementById('verificationDialog').style.display = 'none';
+
+        var donLoadTimesInput = document.getElementById("donload_times");
+        var donLoadTimeSelect = document.getElementById("donload_duration");
+
+        var donLoadTimes = donLoadTimesInput.value;
+        var donLoadDuration = donLoadTimeSelect.value;
+        var filename = global_Filename
+
+        if (donLoadTimes && donLoadDuration) {
+            var form = new FormData();
+            form.append('filename', filename);
+            form.append('expire_time', donLoadTimes);
+            form.append('max_downloads', donLoadDuration);
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('POST', '/files/share?filename='+filename, true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                // 请求成功
+                    alert("设置成功！");
+                    window.location.href = "/files";
+                } else {
+                // 请求失败
+                    alert("设置失败！");
+                    console.log(xhr.responseText);
+                }
+            }
+        };
+        xhr.send(form);
+        }
+        else{
+            alert("请输入共享设置！");
+        }
+
+    }
+
+    function CancelVerification() {
+        document.getElementById('verificationDialog').style.display = 'none';
+    }
+</script>
 {%- endblock content %}

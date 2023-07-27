@@ -3,7 +3,7 @@
 import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-nacl_sk_path = "./certtest/privateKey.pem"
+nacl_sk_path = "./nacl_sk/privateKey.pem"
 storage_path = "./storage"
 
 
@@ -13,7 +13,7 @@ allowed_file_suffix_list=['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'png', 'j
 class BaseConfig:
     DEBUG = False
     TESTING = False
-    SECRET_KEY = 'LearnFlaskTheHardWay.by.JanCUC'
+    SECRET_KEY = 'Cryptography_Practice.by.Getuplate'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = 'sqlite://:memory:'
 

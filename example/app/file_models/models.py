@@ -14,7 +14,7 @@ import enum
 from config import storage_path
 from flask import current_app,flash,redirect,url_for
 import app.secret
-import regex
+
 
 
 
@@ -143,6 +143,43 @@ class File(db.Model):
             return redirect(url_for('files.get_shared_files', code=301)), flash('Token has expired')
         if f.max_downloads is not None and f.max_downloads <= 0:
             return redirect(url_for('files.get_shared_files', code=301)), flash('Exceeded maximum download limit')
+        hash_value = f.hash_value
+        if type_ == 'hashvalue':
+            content = hash_value
+            filename = filename + '.hash'
+        elif type_ == 'signature':
+            # 读取签名
+            with open(storage_path+str(user.id)+'/'+hash_value+'.sig', 'rb') as f_:
+                content = f_.read()
+                filename = filename+'.sig'
+        else:
+            # 读取密文
+            with open(storage_path+str(user.id)+'/'+hash_value, 'rb') as f_:
+                content = f_.read()
+            if type_ == 'plaintext':
+                content = app.secret.symmetric_decrypt(app.secret.decrypt(user.encrypted_symmetric_key), content)
+            elif type_ == 'encrypted':
+                filename = filename + '.encrypted'
+        response = make_response(content)
+        response.headers['Content-Disposition'] = 'attachment; filename={}'.format(filename)
+        if f.max_downloads is not None:
+            f.max_downloads-=1
+        db.session.commit()
+        return response
+
+
+    @classmethod
+    def download_shared_file_out(cls, user, filename, type_):
+        from flask import make_response
+        import time
+        f = File.query.filter(and_(File.creator_id == user.id, File.filename == filename)).first()
+        assert f, 'no such file ({})'.format(filename)
+        if not f.download_tokens:
+            return redirect(url_for('shared_files.get__', code=301)), flash('Invalid token')
+        if f.expire_time is not None and time.time() > f.expire_time:
+            return redirect(url_for('shared_files.get__', code=301)), flash('Token has expired')
+        if f.max_downloads is not None and f.max_downloads <= 0:
+            return redirect(url_for('shared_files.get__', code=301)), flash('Exceeded maximum download limit')
         hash_value = f.hash_value
         if type_ == 'hashvalue':
             content = hash_value

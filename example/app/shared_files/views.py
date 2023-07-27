@@ -18,7 +18,7 @@ def get__():
     return render_template('shared_files.html', list=list_)
 
 
-@shared_files.route('/download/<token>',methods=['GET', 'POST'])
+@shared_files.route('/download',methods=['GET', 'POST'])
 def get__download():
     
     try:
@@ -29,12 +29,12 @@ def get__download():
         type_ = request.args.get('type')
         assert type_, 'missing type'
         assert type_ in ('encrypted', 'signature','plaintext'), 'unknown type'
-        user = User.get_by(name=username)
-        return File.download_file(user, filename, type_)
+        user = User.get_by(name=username)        
+        return File.download_shared_file_out(user, filename, type_)
     except AssertionError as e:
         message = e.args[0] if len(e.args) else str(e)
         flash('下载失败！' + message)
-        return redirect('/shared_file')
+        return redirect(url_for('shared_files'))
 
 
 

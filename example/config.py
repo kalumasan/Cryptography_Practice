@@ -4,7 +4,7 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 nacl_sk_path = "./nacl_sk/privateKey.pem"
-storage_path = "./storage"
+storage_path = "./storage/user_files"
 
 
 

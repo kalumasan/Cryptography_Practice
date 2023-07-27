@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title -%}共享的文件{%- endblock title %}
+
+{% block content -%}
+
+<div class="row" style="padding-top: 10px;margin-bottom: 10px;border-radius: 3px;border: 1px solid #efefef;">
+  <div class="col-md-12">
+    <div class="link-container">
+        {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            <p>{{message}}</p>
+        {% endfor %}
+        {% endwith %}
+        {% if list %}
+        <p>当前有以下共享文件</p>
+        <div class="link-container a">
+        <ui>
+        {% for e in list %}
+            <li>
+                {{e[0]}} by {{e[1]}} (已加密)
+                    
+                    <a href="/files/shared_files_download?filename={{e[0]}}&username={{e[1]}}&type=encrypted" style="position: absolute; right: 209px;">下载</a>
+                    <a href="/files/shared_files_download?filename={{e[0]}}&username={{e[1]}}&type=signature" style="position: absolute; right: 85px;">下载签名文件</a>
+                    <a href="/files/shared_files_download?filename={{e[0]}}&username={{e[1]}}&type=plaintext" id="decrypt-download-btn" style="position: absolute; right: 0px;margin-right: 15px;">解密并下载</a>
+                                    
+            </li>
+        {% endfor %}
+        </ui>
+        </div>
+        {% else %}
+            <p>当前没有任何共享文件</p>
+        {% endif %}
+        <br>
+        <div class="link-container a">
+            <!-- <a href="/">首页</a> -->
+            <a href="/public_key">获取网页公钥</a>
+        </div>  
+    </div>
+  </div>
+</div>
+
+{%- endblock content %}

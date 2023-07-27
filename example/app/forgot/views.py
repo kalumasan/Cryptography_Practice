@@ -7,7 +7,7 @@ from app.extensions import db
 from app.blueprints import forgot
 import random
 import re
-
+import hashlib
 
 
 
@@ -28,10 +28,14 @@ def sendemail():
         else:
             email=form.email.data       
             token = random.randint(100000, 999999)  # 生成随机验证码
+             # 将token转换为字符串
+            token_str = str(token)
+            # 使用SHA256哈希函数对token进行加密
+            hashed_token = hashlib.sha256(token_str.encode()).hexdigest()
             msg = Message('Email Verification', sender='getuplate_crypt@163.com', recipients=[email])
             msg.body = f'Your verification token is: {token}'
             mail.send(msg)
-            return redirect(url_for('forgot.verify_email',token=token, email=form.email.data))
+            return redirect(url_for('forgot.verify_email',token=hashed_token, email=form.email.data))
     
     return render_template('forgot/e_mail.html',form=form)
 
@@ -42,7 +46,9 @@ def verify_email(token,email):
     t_oken=token
     e_mail=email
     if form.validate_on_submit():
-        if t_oken==form.verify_code.data:            
+        token_str = str(form.verify_code.data)
+        hashed_token = hashlib.sha256(token_str.encode()).hexdigest()
+        if t_oken==hashed_token:            
             return redirect(url_for('forgot.reset_password', email=e_mail))
         else:
             flash('无效的验证令牌。')

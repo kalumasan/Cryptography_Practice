@@ -34,7 +34,7 @@ def generateCertificate():
         x509.NameAttribute(NameOID.COMMON_NAME, u'www.cuccloud.getuplate.com'),
         x509.NameAttribute(ExtensionOID.SUBJECT_ALTERNATIVE_NAME, u'DNS:www.cuccloud.getuplate.com'),
     ])
-    certString=x509.CertificateBuilder().subject_name(subjectInfo).issuer_name(issuer).public_key(keyString.public_key()).serial_number(x509.random_serial_number()).not_valid_before(datetime.utcnow()).not_valid_after(datetime.utcnow()+timedelta(days=10)).add_extension(x509.SubjectAlternativeName([x509.DNSName(u'pan.c919.com')]), critical=False).sign(keyString, hashes.SHA256())
+    certString=x509.CertificateBuilder().subject_name(subjectInfo).issuer_name(issuer).public_key(keyString.public_key()).serial_number(x509.random_serial_number()).not_valid_before(datetime.utcnow()).not_valid_after(datetime.utcnow()+timedelta(days=10)).add_extension(x509.SubjectAlternativeName([x509.DNSName(u'www.cuccloud.getuplate.com')]), critical=False).sign(keyString, hashes.SHA256())
     with open(certificateFile,'wb')as f:
         f.write(certString.public_bytes(serialization.Encoding.PEM))
     return certString

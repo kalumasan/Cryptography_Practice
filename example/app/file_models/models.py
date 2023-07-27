@@ -48,7 +48,7 @@ class File(db.Model):
         f = File.query.filter(and_(File.creator_id == user.id, File.filename == filename)).first()
         assert not f, 'file already exists'
         content = data.read()
-        assert len(content) < 1*1024*1024, 'file too large (>=10MB)'
+        assert len(content) < 10*1024*1024, 'file too large (>=10MB)'
         user_id = str(user.id)+'/'
         if not path.exists(storage_path+user_id):
             if not path.exists(storage_path):

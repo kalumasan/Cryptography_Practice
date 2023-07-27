@@ -1,14 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Index</title>
-</head>
-<body>
-    <h1>欢迎使用中传云！</h1>
-    <a href="/files">我的文件</a>
-    <a href="/shared_files">共享文件</a>
-    <a href="/auth/logout">退出</a>
-</body>
-</html>
+{% extends "base.html" %}
 
+{% block title -%}首页{%- endblock title %}
+
+{% block content -%}
+<div class="login-box" style="margin: 17% auto;">
+  <div class="login-logo-b" style="font-size: 60px;padding: 50px 0px 50px;">
+    <strong>欢迎使用中传云！</strong>
+</div>
+  </div>
+
+{%- endblock content %}

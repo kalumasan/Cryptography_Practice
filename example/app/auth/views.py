@@ -1,13 +1,13 @@
 # -*- coding: UTF-8 -*-
 from flask import render_template, redirect, url_for, request
-from flask_login import LoginManager, login_required, login_user, logout_user
+from flask_login import LoginManager, login_required, login_user, logout_user,current_user
 
 from app.auth.forms import SignInForm
 from app.auth.forms import SignUpForm
 
 from app.blueprints import auth
 from app.user.models import User,UserRole
-
+from app.file_models.models import File
 from app.extensions import db
 from app.extensions import login_manager
 import re
@@ -72,3 +72,10 @@ def logout():
     logout_user()
     return render_template('auth/logout.html')
 
+@auth.route('/symmetric_key')
+@login_required
+def symmetric_key():    
+    #encrypt_symmetric_key=current_user.name
+    #print("encrypt_symmetric_key:", encrypt_symmetric_key)
+    user = User.query.filter_by(email=current_user.email).first_or_404()
+    return render_template('auth/symmetric_key.html', username=current_user.name, encrypt_symmetric_key=user.encrypted_symmetric_key)

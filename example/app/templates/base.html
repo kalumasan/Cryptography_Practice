@@ -11,7 +11,7 @@
 {% block navbar %}
 <div class="container">
     <div class="navbar-header">
-        <a href="{{url_for('home.index')}}" class="navbar-brand"><b>Insta</b>CUC</a>
+        <a href="{{url_for('home.index')}}" class="navbar-brand"><b>Cloud</b>cuc</a>
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
             <i class="fa fa-bars"></i>
         </button>
@@ -36,9 +36,18 @@
                 <ul id="user-menu" class="dropdown-menu">
                     <!-- Menu Body -->
                     <li class="user-body">
-                        <a href="#" class="btn btn-default btn-flat">Profile</a>
+                        <a href="/" class="btn btn-default btn-flat">首页</a>
                     </li>
                     <!-- Menu Footer-->
+                    <li class="user-footer">
+                        <a href="{{url_for('files.get__file')}}" class="btn btn-default btn-flat">我的文件</a>
+                    </li>
+                    <li class="user-footer">
+                        <a href="/files/shared_files" class="btn btn-default btn-flat">共享文件</a>
+                    </li>
+                    <li class="user-footer">
+                        <a href="{{url_for('auth.symmetric_key')}}" class="btn btn-default btn-flat">获取身份码</a>
+                    </li>
                     <li class="user-footer">
                         <a href="{{url_for('auth.logout')}}" class="btn btn-default btn-flat">Sign out</a>
                     </li>

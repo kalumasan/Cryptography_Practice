@@ -14,6 +14,7 @@ if not exists(nacl_sk_path):
 else:
     with open(nacl_sk_path, 'rb') as f:
         sk_raw = f.read()
+        
 
 
 def encrypt(plaintext: bytes):
@@ -45,7 +46,7 @@ def symmetric_decrypt(symmetric_key: bytes, ciphertext: bytes):
 
 
 def get_pk_raw():
-    return PrivateKey(sk_raw).public_key.encode()
+    return PrivateKey(sk_raw).public_key.encode(),print(PrivateKey(sk_raw).public_key.encode())
 
 
 def new_pair():

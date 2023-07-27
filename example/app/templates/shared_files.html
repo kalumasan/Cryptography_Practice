@@ -1,30 +1,144 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>共享的文件</title>
-</head>
-<body>
-    {% with messages = get_flashed_messages() %}
+{% extends "base.html" %}
+
+{% block title -%}共享的文件{%- endblock title %}
+
+{% block navbar %}
+<div class="container">
+    <div class="navbar-header">
+        <a href="{{url_for('home.index')}}" class="navbar-brand"><b>Cloud</b>cuc</a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+            <i class="fa fa-bars"></i>
+        </button>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+        <ul class="nav navbar-nav">
+        </ul>
+
+    </div>
+    <!-- /.navbar-collapse -->
+    <!-- Navbar Right Menu -->
+    <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+            <!-- User Account Menu -->
+            <li class="dropdown user user-menu">
+                <!-- Menu Toggle Button -->
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <span class="hidden-xs">匿名用户</span>
+                </a>
+                <ul id="user-menu" class="dropdown-menu">
+                    <!-- Menu Body -->
+                    <li class="user-body">
+                        <a href="{{url_for('auth.login')}}" class="btn btn-default btn-flat">登录</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- /.navbar-custom-menu -->
+</div>
+{%- endblock navbar %}
+
+{% block content -%}
+
+<div class="row" style="padding-top: 10px;margin-bottom: 10px;border-radius: 3px;border: 1px solid #efefef;">
+  <div class="col-md-12">
+    <div class="link-container">
+        {% with messages = get_flashed_messages() %}
         {% for message in messages %}
             <p>{{message}}</p>
         {% endfor %}
-    {% endwith %}
-    {% if list %}
+        {% endwith %}
+        {% if list %}
         <p>当前有以下共享文件</p>
+        <div class="link-container a">
         <ui>
         {% for e in list %}
             <li>
                 {{e[0]}} by {{e[1]}} (已加密)
-                <a href="/shared_files/download?filename={{e[0]}}&username={{e[1]}}&type=encrypted">下载</a>
-                <a href="/shared_files/download?filename={{e[0]}}&username={{e[1]}}&type=signature">下载签名文件</a>
+                    
+                    <a href="/shared_files/download?filename={{e[0]}}&username={{e[1]}}&type=encrypted" style="position: absolute; right: 209px;">下载</a>
+                    <a href="/shared_files/download?filename={{e[0]}}&username={{e[1]}}&type=signature" style="position: absolute; right: 85px;">下载签名文件</a>
+                    <a href="#" onclick="showVerificationDialog('{{e[0]}}', '{{e[1]}}'); return false;" style="position: absolute; right: 0px;margin-right: 15px;">解密并下载</a>
+                                    
             </li>
         {% endfor %}
         </ui>
-    {% else %}
-        <p>当前没有任何共享文件</p>
-    {% endif %}
-    <a href="/">首页</a>
-    <a href="/public_key">获取网站公钥</a>
-</body>
-</html>
+        </div>
+        <!-- 弹出验证弹窗的代码 -->
+        <div id="verificationDialog" style="display:none;position: fixed;top: 30%;left: 50%;transform: scale(1.25) translate(-40%, -40%);background-color: white;border: 1px solid #3c8dbc;">
+            <p style="font-size: 7px;color: grey;margin: 10px 10px 0px;font-weight: 400;">请输入验证信息：</p>
+            <input type="password" id="passwordInput" style="margin: 10px 10px 5px;border: 1px solid #3c8dbc;">
+            <br>
+            <input class="btn btn-link" type="button" onclick="verifyAndDownload()" value="确认">
+            <input class="btn btn-link" type="button" onclick="CancelVerification()" value="取消">
+        </div>
+
+        {% else %}
+            <p>当前没有任何共享文件</p>
+        {% endif %}
+        <br>
+        <div class="link-container a">
+            <a href="/public_key">获取网页公钥</a>
+        </div>  
+    </div>
+  </div>
+</div>
+
+<script>
+
+    var global_Filename = "";
+    var global_Username = "";
+
+    function showVerificationDialog(filename, username) {
+        global_Filename = filename;
+        global_Username = username;
+        document.getElementById('verificationDialog').style.display = 'block';
+    }
+
+    function verifyAndDownload() {
+
+        document.getElementById('verificationDialog').style.display = 'none';
+        // 获取用户输入的密码
+        var password = document.getElementById('passwordInput').value;
+        var filename =global_Filename;
+        var username = global_Username;
+
+        // 发送Ajax请求，将验证信息传递到后端
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/shared_files/verify_download', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+                if (xhr.status == 200) {
+                    // 验证通过，调用后端下载接口
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.valid === true) {
+                        window.location.href = '/shared_files/download?filename=' + filename + '&username=' + username + '&type=plaintext';
+                    } else {
+                        alert('验证失败，请重新输入密码！');
+                    }
+                } else {
+                    alert('发生错误，无法下载文件！');
+                }
+            }
+        };
+
+        var requestData = {
+        password: password,
+        username: username,
+        // 其他需要传递给后端的数据
+        // ...
+        };
+        xhr.send(JSON.stringify(requestData));
+
+    }
+
+    function CancelVerification() {
+        document.getElementById('verificationDialog').style.display = 'none';
+    }
+</script>
+
+
+{%- endblock content %}

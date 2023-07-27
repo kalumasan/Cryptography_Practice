@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-from flask import render_template, redirect, send_from_directory, current_app
+from flask import render_template, redirect, send_from_directory, current_app,make_response
 from flask_login import login_required
 
 from app.blueprints import home
@@ -9,6 +9,15 @@ from app.blueprints import home
 @login_required
 def index():
     return render_template('home.html')
+
+@home.route('public_key')
+def public_key():
+    from app.secret import get_pk_raw
+    response = make_response(get_pk_raw())
+    response.headers['Content-Disposition'] = 'attachment; filename=public_key'
+    return response
+
+
 
 
 @home.route('/images/<image_name>')

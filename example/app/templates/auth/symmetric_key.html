@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title -%}首页{%- endblock title %}
+
+{% block content -%}
+<div class="login-box" style="margin: 8% auto;width: 800px;">
+  <div class="login-logo-b" style="font-size: 20px;padding: 50px 0px 50px;text-align: center;">
+    请在确认环境安全的前提下查看身份码，显示身份码10秒后将自动跳转至首页：
+    <!-- 添加一个按钮，用于显示身份码 -->
+    <br>
+    <button id="showCodeButton" style="margin: 30px;font-size: 16px;">显示身份码</button>
+  
+    <!-- 显示身份码的区域，初始状态为隐藏 -->
+    <div id="codeContainer" style="display: none;text-align: center;font-size: 16px;">
+      <div style="width: 700px;overflow: auto;border: 1px solid #ddd;color: #367fa9;margin-inline: auto;padding: 10px 3px 20px;">{{ encrypt_symmetric_key }}</div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+var showCodeButton = document.getElementById('showCodeButton');
+var codeContainer = document.getElementById('codeContainer');
+
+// 点击按钮后显示身份码
+showCodeButton.addEventListener('click', function() {
+  codeContainer.style.display = 'block';
+  
+  // 10s后跳转到首页
+  setTimeout(function() {
+    window.location.href = "/";
+  }, 10000);
+});
+</script>
+{%- endblock content %}

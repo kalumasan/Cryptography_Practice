@@ -12,7 +12,7 @@ from app.extensions import bcrypt
 
 import enum
 from config import storage_path
-from flask import current_app
+from flask import current_app,flash,redirect,url_for
 import app.secret
 
 
@@ -29,7 +29,9 @@ class File(db.Model):
     filename = db.Column(db.String(64), primary_key=True)
     hash_value = db.Column(db.String(128))
     shared = db.Column(db.Boolean, default=False)
-
+    download_tokens = db.Column(db.String(36),nullable=True)
+    expire_time = db.Column(db.Integer)  # 存储时间戳，单位为秒
+    max_downloads = db.Column(db.Integer)
     __unique_constraint__ = (creator_id, filename)  # 添加唯一约束，替代之前的复合主键
 
     @classmethod
@@ -54,6 +56,7 @@ class File(db.Model):
             mkdir(storage_path+user_id)
         # 计算原文件的哈希
         hash_value = sha512(content).hexdigest()
+        print(user.encrypted_symmetric_key)
         # 判断文件是否存在
         if not path.exists(storage_path+user_id+hash_value):
             # 加密并存储。加密前得先还原出对称密钥。
@@ -109,8 +112,57 @@ class File(db.Model):
         return response
 
     @classmethod
-    def share_file(cls, user, filename):
+    def share_file(cls, user, filename, expire_time=None, max_downloads=None):
+        import uuid
+        import time
         f = File.query.filter(and_(File.creator_id == user.id, File.filename == filename)).first()
         assert f, 'no such file ({})'.format(filename)
         f.shared = not f.shared
+        if f.shared:
+            f.download_tokens = str(uuid.uuid4())
+            print(f.download_tokens)
+            if expire_time is not None:
+                f.expire_time = int(time.time()) + expire_time
+            if max_downloads is not None:
+                f.max_downloads = max_downloads
         db.session.commit()
+        if not f.shared:
+            f.download_tokens = None
+            print(f.download_tokens)
+
+
+    @classmethod
+    def download_shared_file(cls, user, filename, type_):
+        from flask import make_response
+        import time
+        f = File.query.filter(and_(File.creator_id == user.id, File.filename == filename)).first()
+        assert f, 'no such file ({})'.format(filename)
+        if not f.download_tokens:
+            return redirect(url_for('files.get_shared_files', code=301)), flash('Invalid token')
+        if f.expire_time is not None and time.time() > f.expire_time:
+            return redirect(url_for('files.get_shared_files', code=301)), flash('Token has expired')
+        if f.max_downloads is not None and f.max_downloads <= 0:
+            return redirect(url_for('files.get_shared_files', code=301)), flash('Exceeded maximum download limit')
+        hash_value = f.hash_value
+        if type_ == 'hashvalue':
+            content = hash_value
+            filename = filename + '.hash'
+        elif type_ == 'signature':
+            # 读取签名
+            with open(storage_path+str(user.id)+'/'+hash_value+'.sig', 'rb') as f_:
+                content = f_.read()
+                filename = filename+'.sig'
+        else:
+            # 读取密文
+            with open(storage_path+str(user.id)+'/'+hash_value, 'rb') as f_:
+                content = f_.read()
+            if type_ == 'plaintext':
+                content = app.secret.symmetric_decrypt(app.secret.decrypt(user.encrypted_symmetric_key), content)
+            elif type_ == 'encrypted':
+                filename = filename + '.encrypted'
+        response = make_response(content)
+        response.headers['Content-Disposition'] = 'attachment; filename={}'.format(filename)
+        if f.max_downloads is not None:
+            f.max_downloads-=1
+        db.session.commit()
+        return response

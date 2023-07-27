@@ -3,8 +3,9 @@
 import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-nacl_sk_path = "certtest/privateKey.pem"
-storage_path = "storage"
+nacl_sk_path = "./certtest/privateKey.pem"
+storage_path = "./storage"
+
 
 
 allowed_file_suffix_list=['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'png', 'jpg', 'jpeg', 'gif']

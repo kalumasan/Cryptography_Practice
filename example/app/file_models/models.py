@@ -14,11 +14,11 @@ import enum
 from config import storage_path
 from flask import current_app,flash,redirect,url_for
 import app.secret
+import regex
 
 
 
-
-filename_pattern = re.compile(r'[^\u4e00-\u9fa5]+')
+filename_pattern = re.compile(r'[\u4e00-\u9fff\w]+')
 
 
 class File(db.Model):
@@ -26,7 +26,7 @@ class File(db.Model):
     __table_args__ = {'mysql_collate': 'utf8_general_ci'}
 
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), primary_key=True)
-    filename = db.Column(db.String(64), primary_key=True)
+    filename = db.Column(db.String(128), primary_key=True)
     hash_value = db.Column(db.String(128))
     shared = db.Column(db.Boolean, default=False)
     download_tokens = db.Column(db.String(36),nullable=True)
@@ -39,11 +39,11 @@ class File(db.Model):
         from hashlib import sha512
         from config import allowed_file_suffix_list
         filename = data.filename
-        assert len(filename) <= 64, 'filename too long (>64B)'
-        assert filename_pattern.fullmatch(filename), 'no unicode character allowed'
+        assert len(filename) <= 128, 'filename too long (>128B)'
+        assert re.match(filename_pattern, filename), 'invalid filename'
         filename_suffix = filename.rsplit('.', maxsplit=1)[-1]
         print(f"filename_suffix: {filename_suffix}, allowed_file_suffix_list: {allowed_file_suffix_list}")
-        assert filename_suffix in allowed_file_suffix_list, 'banned file type'
+        assert filename_suffix in allowed_file_suffix_list, 'The file type is not compliant'
         
         f = File.query.filter(and_(File.creator_id == user.id, File.filename == filename)).first()
         assert not f, 'file already exists'

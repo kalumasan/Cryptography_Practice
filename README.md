@@ -59,6 +59,12 @@
 ```python
 #当前目录为仓库根目录
 pip install -r requirements.txt
+# 初始化数据库
+flask db init
+# 生成迁移文件
+flask db migrate
+# 迁移数据库，即创建database以及各个表
+flask db upgrade
 # 运行站点
 set FLASK_RUN_CERT=cert\selfsignedCertificate.pem
 set FLASK_RUN_KEY=cert\privateKey.pem

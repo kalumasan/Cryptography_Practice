@@ -71,7 +71,7 @@ flask run --host=www.cuccloud.getuplate.com --port=443 --cert=cert\selfsignedCer
 Windows环境中，文件位于`C:\Windows\System32\drivers\etc`
 - 证书安装
 因为我们的证书使用的是自签名证书，需要在浏览器的管理证书的cert目录下将www.cuccloud.getuplate.com.crt证书添加到浏览器受信用的根证书，中间证书颁发机构列表中。
-![](img/intermediacert.png)
-![](img/rootcert.png)
+![](0_kalumasan/img/intermediacert.png)
+![](0_kalumasan/img/rootcert.png)
 ## 演示
 [查看演示视频]()

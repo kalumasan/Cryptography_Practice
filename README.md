@@ -80,4 +80,4 @@ Windows环境中，文件位于`C:\Windows\System32\drivers\etc`
 ![](0_kalumasan/img/intermediacert.png)
 ![](0_kalumasan/img/rootcert.png)
 ## 演示
-[查看演示视频]()
+[查看演示视频](https://www.bilibili.com/video/BV1rm4y1s7CB/?vd_source=533a6f7212c89a169cb676fd0b185548)
